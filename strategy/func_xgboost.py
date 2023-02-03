@@ -12,28 +12,24 @@ from pprint import pprint
 
 # Run XGBOOST on algorithm
 def run_xgb(target_item):
-  df = pd.read_json("history.json")
+  md = 3
+  lr = 0.01
+  gm = 0.03
+  test_size_rate = 0.3
+
   # Set targets and params
-  if target_item == "bull_bear_ratio_up":
+  df = pd.read_json("history.json")
+  if target_item == "model_ratio":
     df.loc[df["bull_ratio"].shift(-1) > df["bear_ratio"].shift(-1), "TARGET"] = 1
     df.loc[df["bull_ratio"].shift(-1) <= df["bear_ratio"].shift(-1), "TARGET"] = 0
     drop_columns = ["minute", "second", "close_price", "lock_price", "hour"]
-    ne = 27
-    md = 3
-    lr = 0.01
-    gm = 0.03
-    test_size_rate = 0.3
-  elif target_item == "bulls_win":
-    df.loc[df["close_price"].shift(-1) > df["lock_price"].shift(-1) , "TARGET"] = 1
-    df.loc[df["close_price"].shift(-1) <= df["lock_price"].shift(-1) , "TARGET"] = 0
+    ne = 18
+  
+  if target_item == "model_direction":
+    df.loc[df["close_price"].shift(-1) > df["lock_price"].shift(-1) , "TARGET"] = 0
+    df.loc[df["close_price"].shift(-1) <= df["lock_price"].shift(-1) , "TARGET"] = 1
     drop_columns = ["close_price", "lock_price"]
-    ne = 19
-    md = 3
-    lr = 0.01
-    gm = 0.03
-    test_size_rate = 0.3
-
-  print(df)
+    ne = 20
 
   # Drop Features and NA
   df.drop(columns=drop_columns, inplace=True)
@@ -126,16 +122,55 @@ def run_xgb(target_item):
   print(test_summary_report["1.0"]["precision"])
 
   # Plots
-  # plt.title('Error')
-  # plt.plot(validation_0_error)
-  # plt.plot(validation_1_error)
-  # plt.show()
-
-  plt.title('AUC')
-  plt.plot(validation_0_auc)
-  plt.plot(validation_1_auc)
+  plt.title('Error')
+  plt.plot(validation_0_error)
+  plt.plot(validation_1_error)
   plt.show()
+
+  # plt.title('AUC')
+  # plt.plot(validation_0_auc)
+  # plt.plot(validation_1_auc)
+  # plt.show()
 
   # plt.title('Feature Importance')
   # plt.bar(columns, importance_features)
   # plt.show()
+
+  # Save model
+  classifier.save_model(f"{target_item}.json")
+
+
+# Predict XGB payout ratio winnder
+def xgb_predict_ratio(df):
+  drop_columns = ["minute", "second", "close_price", "lock_price", "hour"]
+
+  # Drop Columns
+  df.drop(columns=drop_columns, inplace=True)
+
+  # Prepare data
+  X_data = df.iloc[:, 2:]
+
+  # Make predictions
+  xbg_classifier = XGBClassifier()
+  xbg_classifier.load_model("model_ratio.json")
+  preds = xbg_classifier.predict(X_data)
+  preds_proba = xbg_classifier.predict_proba(X_data)
+  return preds[0], preds_proba.tolist()[0][1]
+
+
+# Predict XGB payout direction winnder
+def xgb_predict_direction(df_2):
+  drop_columns = ["close_price", "lock_price"]
+
+  # Drop Columns
+  df_2.drop(columns=drop_columns, inplace=True)
+
+  # Prepare data
+  X_data = df_2.iloc[:, 2:]
+
+  # Make predictions
+  xbg_classifier = XGBClassifier()
+  xbg_classifier.load_model("model_direction.json")
+  preds = xbg_classifier.predict(X_data)
+  preds_proba = xbg_classifier.predict_proba(X_data)
+  return preds[0], preds_proba.tolist()[0][1]

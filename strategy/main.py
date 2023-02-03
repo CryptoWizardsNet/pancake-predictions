@@ -1,8 +1,8 @@
 import warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-from constants import SAVE_HISTORY, RUN_XGB
-from func_read import save_history
+from constants import SAVE_HISTORY, RUN_MODEL_1, RUN_MODEL_2, SCAN_OPPORTUNITIES
+from func_read import save_history, make_predictions
 from func_xgboost import run_xgb
 
 if __name__ == "__main__":
@@ -10,8 +10,11 @@ if __name__ == "__main__":
   if SAVE_HISTORY:
     save_history()
 
-  if RUN_XGB:
-    # run_xgb("bull_bear_ratio_up")
-    run_xgb("bulls_win")
+  if RUN_MODEL_1:
+    run_xgb("model_ratio")
 
+  if RUN_MODEL_2:
+    run_xgb("model_direction")
 
+  if SCAN_OPPORTUNITIES:
+    make_predictions()

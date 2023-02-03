@@ -4,7 +4,9 @@ import json
 
 # SETTINGS
 SAVE_HISTORY = False
-RUN_XGB = True
+RUN_MODEL_1 = False
+RUN_MODEL_2 = False
+SCAN_OPPORTUNITIES = True
 
 # Get ABI
 with open("abi.json", "r") as myFile:
