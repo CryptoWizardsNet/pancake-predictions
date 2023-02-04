@@ -1,6 +1,6 @@
 from func_write import send_tx
 from func_xgboost import xgb_predict_ratio, xgb_predict_direction
-from constants import CONTRACT, IS_EXECUTE_TRADE
+from constants import CONTRACT, IS_EXECUTE_TRADE, w3, ACCOUNT_ADDRESS
 from web3 import Web3
 from datetime import datetime
 import pandas as pd
@@ -8,6 +8,16 @@ import pandas as pd
 
 # Make predictions
 def make_predictions():
+
+  # Get balance
+  wallet_balance = w3.eth.getBalance(ACCOUNT_ADDRESS)
+  human_balance = Web3.fromWei(wallet_balance,"ether")
+
+  # Guard: Ensure minimum funds available (BNB)
+  if human_balance < 0.5:
+    return
+
+  # Get current epoch
   current_epoch = CONTRACT.functions.currentEpoch().call()
   stats_epoch = current_epoch - 1
   try:
@@ -17,6 +27,7 @@ def make_predictions():
       print(e)
       exit(1)
   
+  # Extract information
   lock_timestamp = current_rounds_list[2]
   lock_price = current_rounds_list[4]
   close_price = current_rounds_list[5]
