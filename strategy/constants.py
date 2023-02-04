@@ -3,13 +3,13 @@ from decouple import config
 import json
 
 # TRAIN
-SAVE_HISTORY = False
+SAVE_HISTORY = True
 RUN_MODEL_1 = True
-RUN_MODEL_2 = False
+RUN_MODEL_2 = True
 
 # EXECUTION
 SCAN_OPPORTUNITIES = True
-IS_EXECUTE_TRADE = False
+IS_EXECUTE_TRADE = True
 
 # Get ABI
 with open("abi.json", "r") as myFile:
