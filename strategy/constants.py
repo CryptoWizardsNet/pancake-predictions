@@ -3,7 +3,7 @@ from decouple import config
 import json
 
 # TRAIN
-SAVE_HISTORY = True
+SAVE_HISTORY = False
 RUN_MODEL_1 = True
 RUN_MODEL_2 = True
 
