@@ -1,20 +1,12 @@
-import warnings
-warnings.simplefilter(action="ignore", category=FutureWarning)
-
-from constants import SAVE_HISTORY, RUN_MODEL_1, RUN_MODEL_2, SCAN_OPPORTUNITIES
-from func_read import save_history, make_predictions
-from func_xgboost import run_xgb
+from constants import SCAN_OPPORTUNITIES
+from func_trade import make_predictions
+from func_write import claim_winnings
 
 if __name__ == "__main__":
 
-  if SAVE_HISTORY:
-    save_history()
-
-  if RUN_MODEL_1:
-    run_xgb("model_ratio")
-
-  if RUN_MODEL_2:
-    run_xgb("model_direction")
-
   if SCAN_OPPORTUNITIES:
+    pass
+
+    claim_winnings()
+
     make_predictions()

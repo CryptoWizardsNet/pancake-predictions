@@ -23,11 +23,11 @@ def run_xgb(target_item):
     df.loc[df["bull_ratio"].shift(-1) > df["bear_ratio"].shift(-1), "TARGET"] = 1
     df.loc[df["bull_ratio"].shift(-1) <= df["bear_ratio"].shift(-1), "TARGET"] = 0
     drop_columns = ["minute", "second", "close_price", "lock_price", "hour"]
-    ne = 18
+    ne = 25
   
   if target_item == "model_direction":
-    df.loc[df["close_price"].shift(-1) > df["lock_price"].shift(-1) , "TARGET"] = 0
-    df.loc[df["close_price"].shift(-1) <= df["lock_price"].shift(-1) , "TARGET"] = 1
+    df.loc[df["close_price"].shift(-1) > df["lock_price"].shift(-1) , "TARGET"] = 1
+    df.loc[df["close_price"].shift(-1) <= df["lock_price"].shift(-1) , "TARGET"] = 0
     drop_columns = ["close_price", "lock_price"]
     ne = 20
 
@@ -116,16 +116,20 @@ def run_xgb(target_item):
   # Standard deviation
   std_dev_perc = train_cross_val_score.std() * 100
   avg_score_perc = train_cross_val_score.mean() * 100
-  print(std_dev_perc)
-  print(avg_score_perc)
-  print(train_summary_report["1.0"]["precision"])
-  print(test_summary_report["1.0"]["precision"])
+
+  # Show key metrics
+  print("")
+  print(target_item)
+  print("Std Dev %: ", std_dev_perc)
+  print("Train: ", train_summary_report["1.0"]["precision"])
+  print("Test: ", test_summary_report["1.0"]["precision"])
+  print("")
 
   # Plots
-  plt.title('Error')
-  plt.plot(validation_0_error)
-  plt.plot(validation_1_error)
-  plt.show()
+  # plt.title('Error')
+  # plt.plot(validation_0_error)
+  # plt.plot(validation_1_error)
+  # plt.show()
 
   # plt.title('AUC')
   # plt.plot(validation_0_auc)

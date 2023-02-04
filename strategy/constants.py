@@ -2,11 +2,14 @@ from web3 import Web3
 from decouple import config
 import json
 
-# SETTINGS
+# TRAIN
 SAVE_HISTORY = False
-RUN_MODEL_1 = False
+RUN_MODEL_1 = True
 RUN_MODEL_2 = False
+
+# EXECUTION
 SCAN_OPPORTUNITIES = True
+IS_EXECUTE_TRADE = False
 
 # Get ABI
 with open("abi.json", "r") as myFile:
